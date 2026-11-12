@@ -15,7 +15,8 @@ import numpy as np
 
 from .calibration import (Calibration, NullModel, estimate_calibration,
                           estimate_null, focal_component, reference_mask,
-                          standardized_field, bimodality_coefficient, normal_ppf)
+                          standardized_field, bimodality_coefficient, normal_ppf,
+                          optical_density)
 from .config import Params
 from .imageio import LoadedImage, read_image
 from .metrics import (Metrics, area_metrics, bootstrap_ci_objects, bootstrap_ci_pixels,
@@ -45,6 +46,8 @@ class AnalysisResult:
     u_focal: np.ndarray
     objects: List = field(default_factory=list)
     elapsed_s: float = 0.0
+    tau_int: float = 0.0
+    tau_u: float = 0.0
 
     def as_row(self) -> Dict:
         row = {"code": self.code, "file": os.path.basename(self.path)}
@@ -56,7 +59,8 @@ class AnalysisResult:
             "ref_contrast": round(self.calibration.contrast, 3),
             "null_mu": round(self.null.mu, 4),
             "null_sd": round(self.null.sigma, 4),
-            "threshold_u": round(self.null.threshold, 4),
+            "threshold_u": round(self.tau_u, 4),
+            "threshold_int": round(self.tau_int, 2),
             "alpha": self.params.alpha,
             "qc_grade": self.qc.grade,
             "qc_score": self.qc.score,
@@ -93,7 +97,15 @@ def analyze(path: str,
     refmask = reference_mask(ch.shape, light_pts, params.ref_patch_radius * 1.4)
     null = estimate_null(u, roi, refmask, params.alpha)
 
-    dark_raw = roi & (u > null.threshold)
+    def threshold_at(frac: float):
+        t_int = cal.light_value - frac * (cal.light_value - cal.dark_value)
+        od_t = float(optical_density(np.array([t_int]), cal.light_value)[0])
+        t_u = (od_t - cal.od_light) / max(cal.od_dark - cal.od_light, 1e-6)
+        return float(t_int), float(t_u)
+
+    tau_int, tau_u = threshold_at(params.threshold_frac)
+
+    dark_raw = roi & (ch < tau_int)
     dark, feats = analyze_objects(dark_raw, u, roi, ch, params, apply_filter=True)
 
     if params.decompose:
@@ -105,16 +117,16 @@ def analyze(path: str,
         focal = np.zeros_like(roi)
 
     area = area_metrics(roi, dark, dark_raw, focal, params)
-    cont = continuous_metrics(u, roi, u_s, null.threshold)
+    cont = continuous_metrics(u, roi, u_s, tau_u)
     objs = object_stats(feats, params)
 
-    # 参数敏感性：每个 alpha 都走同样的伪影剔除流程，保证口径一致
+    # 阈值位置敏感性：每个位置都走同样的伪影剔除流程
     dafs = {}
-    for a in params.alpha_sensitivity:
-        thr = null.mu + normal_ppf(1 - a) * null.sigma
-        cand = roi & (u > thr)
+    for frac in params.threshold_frac_sensitivity:
+        ti, _ = threshold_at(frac)
+        cand = roi & (ch < ti)
         masked, _ = analyze_objects(cand, u, roi, ch, params, apply_filter=True)
-        dafs[a] = float(masked.sum() / roi.sum() * 100)
+        dafs[frac] = float(masked.sum() / roi.sum() * 100)
 
     kept_areas = np.array([f.area_um2 for f in feats if not f.reject], dtype=np.float64)
     if kept_areas.size >= 30:
@@ -122,9 +134,9 @@ def analyze(path: str,
     else:
         ci = bootstrap_ci_pixels(dark, roi, params)
     metrics = Metrics(**area, **cont, **objs, **ci,
-                      daf_alpha_low=dafs.get(min(params.alpha_sensitivity), 0.0),
-                      daf_alpha_mid=dafs.get(params.alpha, 0.0),
-                      daf_alpha_high=dafs.get(max(params.alpha_sensitivity), 0.0))
+                      daf_tau_low=dafs.get(min(params.threshold_frac_sensitivity), 0.0),
+                      daf_tau_mid=dafs.get(params.threshold_frac, 0.0),
+                      daf_tau_high=dafs.get(max(params.threshold_frac_sensitivity), 0.0))
 
     bc = bimodality_coefficient(u[roi])
     sat = saturation_fraction(ch, roi, params.saturation_level)
@@ -134,7 +146,7 @@ def analyze(path: str,
     return AnalysisResult(
         code=code or os.path.splitext(os.path.basename(path))[0],
         path=path, params=params, metrics=metrics, qc=qc, calibration=cal,
-        null=null, null_focal=null_f, polygon=list(polygon),
+        null=null, null_focal=null_f, tau_int=tau_int, tau_u=tau_u, polygon=list(polygon),
         light_pts=list(light_pts), dark_pts=list(dark_pts),
         roi_mask=roi, dark_mask=dark, focal_mask=focal,
         u=u, u_smooth=u_s, u_focal=u_f, objects=feats,
@@ -143,6 +155,6 @@ def analyze(path: str,
 
 def preview_threshold(u: np.ndarray, roi: np.ndarray, refmask: np.ndarray,
                       alpha: float, params: Params) -> Tuple[float, np.ndarray]:
-    """仅计算阈值与候选掩膜，用于界面实时预览。"""
+    """仅计算阈值与候选掩膜（按浅/深参考中点），用于界面实时预览。"""
     null = estimate_null(u, roi, refmask, alpha)
     return null.threshold, roi & (u > null.threshold)

@@ -108,10 +108,11 @@ def evaluate(cal, null, metrics, bc: float, sat_frac: float,
         q.add("DAF_HIGH", "warn", "深染面积比过高，可能阈值偏低或整体过染",
               metrics.daf_pct, 50.0)
 
-    # 7) 阈值敏感性
-    if metrics.daf_alpha_mid > 0:
-        rel = abs(metrics.daf_alpha_high - metrics.daf_alpha_low) / metrics.daf_alpha_mid * 100
+    # 7) 阈值位置敏感性
+    if metrics.daf_tau_mid > 0:
+        rel = abs(metrics.daf_tau_high - metrics.daf_tau_low) / metrics.daf_tau_mid * 100
         if rel > 80:
-            q.add("ALPHA_SENS", "warn", "结果对错误率参数较敏感，建议固定 α 并报告敏感性区间",
+            q.add("TAU_SENS", "warn", "结果对阈值位置较敏感，应固定阈值位置并报告敏感性区间",
                   rel, 80.0)
+
     return q.finalize()

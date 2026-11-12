@@ -87,7 +87,7 @@ def run_cli(argv) -> int:
             os.makedirs(os.path.dirname(p), exist_ok=True)
             save_overlay(p, img.rgb, res.roi_mask, res.dark_mask, res.focal_mask,
                          res.light_pts, res.dark_pts, res.polygon,
-                         format_caption(e.code, res.metrics.daf_pct, res.metrics.dark_mm2, res.null.threshold))
+                         format_caption(e.code, res.metrics.daf_pct, res.metrics.dark_mm2, res.tau_u))
             overlays[e.code] = p
 
     if not rows:

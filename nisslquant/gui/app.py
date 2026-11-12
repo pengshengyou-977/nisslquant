@@ -512,10 +512,10 @@ class App(tk.Tk):
             f"标定跨度 OD　 {res.calibration.span:.3f}",
             f"参考对比度　　{res.calibration.contrast:.2f}",
             f"零分布 μ/σ　　{res.null.mu:.3f} / {res.null.sigma:.3f}",
-            f"阈值 τ　　　　{res.null.threshold:.3f}",
+            f"阈值 τ_u　　　{res.tau_u:.3f}（强度 {res.tau_int:.0f}）",
             "",
-            f"α 敏感性　　{res.metrics.daf_alpha_low:.2f} / "
-            f"{res.metrics.daf_alpha_mid:.2f} / {res.metrics.daf_alpha_high:.2f} %",
+            f"阈值敏感性　{res.metrics.daf_tau_low:.2f} / "
+            f"{res.metrics.daf_tau_mid:.2f} / {res.metrics.daf_tau_high:.2f} %",
             f"可信度　　　　{res.qc.grade}（{res.qc.score} 分）",
         ]
         self.result_text.delete("1.0", "end")
@@ -605,7 +605,7 @@ class App(tk.Tk):
             res = self.current_result
             save_overlay(p, self.current_image.rgb, res.roi_mask, res.dark_mask, res.focal_mask,
                          res.light_pts, res.dark_pts, res.polygon,
-                         format_caption(res.code, res.metrics.daf_pct, res.metrics.dark_mm2, res.null.threshold))
+                         format_caption(res.code, res.metrics.daf_pct, res.metrics.dark_mm2, res.tau_u))
             overlays[res.code] = p
         export_html(path, rows, self.session.params, overlays,
                     project=self.session.project, operator=self.session.operator)

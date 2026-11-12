@@ -55,10 +55,10 @@ class Metrics:
     ci_high: float = 0.0
     ci_width: float = 0.0
 
-    # 灵敏度
-    daf_alpha_low: float = 0.0
-    daf_alpha_mid: float = 0.0
-    daf_alpha_high: float = 0.0
+    # 灵敏度（阈值位置 0.4 / 0.5 / 0.6）
+    daf_tau_low: float = 0.0
+    daf_tau_mid: float = 0.0
+    daf_tau_high: float = 0.0
 
     def to_row(self) -> Dict:
         return {k: (round(v, 4) if isinstance(v, float) else v) for k, v in asdict(self).items()}

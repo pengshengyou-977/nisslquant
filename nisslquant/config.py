@@ -39,7 +39,9 @@ class Params:
     decompose: bool = True             # 是否启用局灶/弥漫分解
 
     # ---- 阈值 ----
-    alpha: float = 0.01                # 单侧错误率，对应 z=2.326
+    threshold_frac: float = 0.5        # 阈值在浅→深参考之间的位置：0=浅参考，1=深参考
+    threshold_frac_sensitivity: tuple = (0.4, 0.5, 0.6)
+    alpha: float = 0.01                # 局灶分量与质控用的单侧错误率
     alpha_sensitivity: tuple = (0.005, 0.01, 0.02)
 
     # ---- 伪影剔除 ----
@@ -68,6 +70,7 @@ class Params:
     def to_dict(self) -> Dict[str, Any]:
         d = asdict(self)
         d["alpha_sensitivity"] = list(self.alpha_sensitivity)
+        d["threshold_frac_sensitivity"] = list(self.threshold_frac_sensitivity)
         return d
 
     @classmethod
@@ -76,6 +79,8 @@ class Params:
         clean = {k: v for k, v in d.items() if k in known}
         if "alpha_sensitivity" in clean:
             clean["alpha_sensitivity"] = tuple(clean["alpha_sensitivity"])
+        if "threshold_frac_sensitivity" in clean:
+            clean["threshold_frac_sensitivity"] = tuple(clean["threshold_frac_sensitivity"])
         return cls(**clean)
 
     def save(self, path: str) -> None:

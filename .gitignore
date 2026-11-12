@@ -3,7 +3,7 @@ __pycache__/
 *.egg-info/
 build/
 dist/*
-!dist/NisslQuant_v1.0.0_win64.zip
+!dist/NisslQuant_v1.1.0_win64.zip
 .venv/
 venv/
 .env
