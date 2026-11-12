@@ -30,7 +30,7 @@ dependencies = [
 nisslquant = "nisslquant.__main__:main"
 
 [project.urls]
-Homepage = "https://github.com/YOUR_GITHUB_USERNAME/nisslquant"
+Homepage = "https://github.com/pengshengyou-977/nisslquant"
 
 [tool.setuptools.packages.find]
 include = ["nisslquant*"]

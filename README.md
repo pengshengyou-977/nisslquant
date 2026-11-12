@@ -42,7 +42,7 @@ NisslQuant 把阈值从"人为设定的灰度值"改成"由浅染参考区零分
 需要 Python 3.10+。
 
 ```bash
-git clone https://github.com/YOUR_GITHUB_USERNAME/nisslquant.git
+git clone https://github.com/pengshengyou-977/nisslquant.git
 cd nisslquant
 pip install -r requirements.txt
 ```

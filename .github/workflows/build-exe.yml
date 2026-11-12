@@ -1,0 +1,30 @@
+name: build-windows-exe
+
+on:
+  push:
+    tags:
+      - "v*"
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install numpy opencv-python-headless pillow pyinstaller
+      - name: Run tests
+        run: python -m unittest discover -s tests -v
+      - name: Build executable
+        run: |
+          pyinstaller --noconfirm --clean --onefile --windowed ^
+            --name NisslQuant --icon icon.png main.py
+      - uses: actions/upload-artifact@v4
+        with:
+          name: NisslQuant-windows
+          path: dist/NisslQuant.exe
