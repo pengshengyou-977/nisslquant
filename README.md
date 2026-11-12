@@ -47,7 +47,7 @@ cd nisslquant
 pip install -r requirements.txt
 ```
 
-不装 Python 也可以：从 [Releases](../../releases) 下载 `NisslQuant.exe`（Windows 10/11，单文件免安装）。
+不装 Python 也可以：直接下载 [Windows 版压缩包](https://github.com/pengshengyou-977/nisslquant/raw/main/dist/NisslQuant_v1.0.0_win64.zip)（73 MB，解压即用，免安装）。
 
 ## 快速开始
 
@@ -95,15 +95,15 @@ python main.py --cli --project batch.nqproj --out results.csv --report
 
 ## 方法学验证
 
-在 44 张 20× 小鼠海马齿状回切片上，与"两点中点阈值 + 3×3 开运算"的常规流程对比：
+在 49 张 20× 小鼠海马齿状回切片上，与"两点中点阈值 + 3×3 开运算"的常规流程对比：
 
 | 扰动 | 常规流程 | NisslQuant |
 |---|---|---|
-| 参考点 ±15 px 随机抖动 | DAF 变异系数 54.8% | **0** |
-| 阈值 ±20 灰度 / α 0.005–0.02 | 峰-峰相对变化 131.5% | **31.2%** |
-| ROI 边界 ±5 px | 8.8% | **5.5%** |
+| 参考点 ±15 px 随机抖动 | DAF 变异系数 55.0% | **0** |
+| 阈值 ±20 灰度 / α 0.005–0.02 | 峰-峰相对变化 132.8% | **30.6%** |
+| ROI 边界 ±5 px | 8.7% | **5.8%** |
 
-两种方法的 DAF 相关系数 0.813，Bland–Altman 偏倚 −4.21 个百分点；单张处理约 0.9 s。
+两种方法的 DAF 相关系数 0.801，Bland–Altman 偏倚 −4.18 个百分点；单张处理约 0.86 s。
 详见待发表论文（见下方引用）。
 
 ## 已知局限
