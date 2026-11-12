@@ -1,0 +1,16 @@
+__pycache__/
+*.py[cod]
+*.egg-info/
+build/
+dist/
+.venv/
+venv/
+.env
+*.nqproj
+!examples/*.nqproj
+out/
+overlays/
+_preview*/
+.DS_Store
+Thumbs.db
+*.log

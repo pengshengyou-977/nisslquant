@@ -1,0 +1,36 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "nisslquant"
+version = "1.0.0"
+description = "Semi-automated quantification of dark-stained area in Nissl-stained histological sections"
+readme = "README.md"
+requires-python = ">=3.10"
+license = { text = "MIT" }
+authors = [
+    { name = "Shengyou Peng", email = "819732911@qq.com" },
+    { name = "Zhi Tang", email = "5897054@qq.com" },
+]
+keywords = ["Nissl staining", "histology", "image analysis", "optical density", "neuroscience"]
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: Microsoft :: Windows",
+    "Topic :: Scientific/Engineering :: Image Processing",
+]
+dependencies = [
+    "numpy>=1.24",
+    "opencv-python-headless>=4.8",
+    "Pillow>=10.0",
+]
+
+[project.scripts]
+nisslquant = "nisslquant.__main__:main"
+
+[project.urls]
+Homepage = "https://github.com/YOUR_GITHUB_USERNAME/nisslquant"
+
+[tool.setuptools.packages.find]
+include = ["nisslquant*"]

@@ -1,0 +1,28 @@
+cff-version: 1.2.0
+message: "If you use this software, please cite the article below."
+title: "NisslQuant: semi-automated quantification of dark-stained area in Nissl-stained histological sections"
+abstract: "A Python tool that quantifies the dark-stained area fraction in Nissl-stained sections using dual-reference optical-density calibration, multi-scale density decomposition and an error-rate-controlled threshold, with per-image confidence intervals and quality control."
+type: software
+license: MIT
+repository-code: "https://github.com/YOUR_GITHUB_USERNAME/nisslquant"
+version: "1.0.0"
+date-released: "2026-11-12"
+authors:
+  - family-names: Peng
+    given-names: Shengyou
+    email: 819732911@qq.com
+    orcid: "https://orcid.org/0009-0005-4806-6134"
+  - family-names: Tang
+    given-names: Zhi
+    email: 5897054@qq.com
+preferred-citation:
+  type: article
+  title: "基于双参考光密度标定与多尺度密度分解的尼氏染色深染面积定量方法"
+  authors:
+    - family-names: Peng
+      given-names: Shengyou
+    - family-names: Tang
+      given-names: Zhi
+  year: 2026
+  status: submitted
+  notes: "Manuscript submitted to a Chinese core journal; citation details will be updated upon acceptance."
