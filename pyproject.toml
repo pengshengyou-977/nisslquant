@@ -11,7 +11,6 @@ requires-python = ">=3.10"
 license = { text = "MIT" }
 authors = [
     { name = "Shengyou Peng", email = "819732911@qq.com" },
-    { name = "Zhi Tang", email = "5897054@qq.com" },
 ]
 keywords = ["Nissl staining", "histology", "image analysis", "optical density", "neuroscience"]
 classifiers = [

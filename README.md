@@ -119,7 +119,7 @@ python main.py --cli --project batch.nqproj --out results.csv --report
 
 - 深染面积是**面积积分**，不等于深染细胞计数；
 - 深染成分不唯一（正常尼氏体密集区、皱缩的暗神经元、切片折叠、染料沉淀均可表现为深染）；
-- 参考区仍由人工点选，参考区"性质"判断错误时零分布会偏移，质控只能部分识别；
+- 参考区仍由人工点选，若把深染区误标为浅染参考，中点阈值会随之偏移，质控只能部分识别；
 - 本工具给出的是相对量，不能把某个百分比当作"正常上限"。
 
 ## 仓库结构
@@ -147,9 +147,14 @@ python -m unittest discover -s tests -v
 
 论文正在投稿。接收后请引用：
 
-> 彭圣佑, 唐志. 基于双参考光密度标定与多尺度密度分解的尼氏染色深染面积定量方法[J]. （投稿中）
+> 彭圣佑, 唐志. 阈值策略决定尼氏染色深染面积定量结果：基于 BPAF 暴露小鼠海马齿状回切片的十一方法比较[J]. （投稿中）
 
 仓库本身可引用 `CITATION.cff`。
+
+## 致谢
+
+感谢唐志教授（广东医科大学公共卫生学院）在课题设计与组织学切片方面给予的指导与支持。
+软件由彭圣佑独立开发，著作权归彭圣佑所有。
 
 ## 许可
 
@@ -165,10 +170,10 @@ MIT License，见 [LICENSE](LICENSE)。
 ## English
 
 NisslQuant quantifies the dark-stained area fraction in Nissl-stained histological sections using
-dual-reference optical-density calibration, multi-scale density decomposition, and an error-rate-controlled
-threshold. The threshold is derived from the null distribution of the light reference region, which makes the
-measured area fraction invariant to the placement of reference points. The tool reports a 95% confidence
-interval and a four-level quality grade for every image.
+dual-reference optical-density calibration, multi-scale density decomposition, and a reference-anchored
+midpoint threshold. The threshold is placed at the midpoint between the light and dark reference regions,
+so that it can be checked against two histological landmarks; the tool also reports a threshold-position
+sensitivity range (0.4/0.5/0.6), a 95% confidence interval and a four-level quality grade for every image.
 
 Install with `pip install -r requirements.txt`, run `python main.py` for the GUI, or download the standalone
 Windows executable from Releases. A synthetic demo is provided under `examples/`.
